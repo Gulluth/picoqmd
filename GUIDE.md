@@ -198,7 +198,7 @@ or after changing `PICOQMD_EMBED_DIM` to a smaller value.
 picoqmd bench fixture.json [--pipeline bm25|vector|research|hybrid] [--misses]
 ```
 
-Scores each pipeline against a fixture of queries with known-good results (hit@k, precision, recall, MRR). See `example-bench.json` for the format. Useful before and after any change to models, chunking, or ranking.
+Scores each pipeline against a fixture of queries with known-good results (hit@k, precision, recall, MRR). See `example-bench.json` for the format, and `example-bench-code.json` for a self-contained code-search fixture (index this repo's `**/*.go`, then `picoqmd bench example-bench-code.json`). Useful before and after any change to models, chunking, or ranking.
 
 ### `model`: manage models
 
