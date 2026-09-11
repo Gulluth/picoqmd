@@ -2056,6 +2056,7 @@ func (m *MCPServer) callTool(params json.RawMessage) (any, error) {
 			"needsEmbedding":    pending,
 			"hasVectorIndex":    pending == 0 && chunks > 0,
 			"fingerprint":       embedFingerprint(),
+			"chunkStrategy":     activeChunkStrategy(),
 			"staleObservations": len(stale),
 		}), nil
 
