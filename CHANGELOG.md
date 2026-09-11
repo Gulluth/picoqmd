@@ -20,12 +20,12 @@
   boundaries 21 → 6 at equal chunk counts.
 - Retrieval quality holds up cross-engine on shared corpora (qmd/src +
   mdBook guide, same models). pico auto vs regex, MRR — code fixture:
-  bm25 0.625 vs 0.542, vector 0.917 vs 0.792, research 1.000 vs 0.867;
-  markdown fixture: vector 1.000, research 0.889 (markdown chunks are
-  identical by design). QMD itself scores in the same band on equivalent
-  fixtures (code hybrid MRR 1.000, markdown vector MRR 0.625) — small
-  fixtures saturate, but nothing regressed and auto leads everywhere
-  it can move.
+  bm25 0.625 vs 0.542, vector 0.917 vs 0.792, research 1.000 vs 0.867,
+  hybrid 0.917 vs 0.867; markdown fixture: vector 1.000, research 0.889,
+  hybrid 1.000 both (markdown chunks are identical by design). QMD
+  itself scores in the same band on equivalent fixtures (code hybrid
+  MRR 1.000, markdown vector MRR 0.625) — small fixtures saturate, but
+  nothing regressed and auto leads everywhere it can move.
 
 ## [0.6.2] - 2026-08-29
 
