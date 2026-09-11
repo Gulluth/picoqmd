@@ -1167,7 +1167,7 @@ func embedWorker(maxDocs int, collection string) error {
 				skipCount++
 				continue
 			}
-			chunks := ChunkDocument(string(data))
+			chunks := ChunkDocumentForPath(string(data), absPath, activeChunkStrategy())
 			if err := store.StoreChunks(hash, chunks); err != nil {
 				return err
 			}
