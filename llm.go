@@ -1002,8 +1002,9 @@ func extractLibsFromTarGz(tgzPath, destDir string) error {
 // ---------------------------------------------------------------------------
 
 // embedAll embeds every pending document, or only those in `collection`
-// when non-empty.
-func embedAll(store *Store, collection string) error {
+// when non-empty. `index` is the named index ("" = default) and is
+// forwarded to the embed-worker subprocess so it opens the same DB.
+func embedAll(store *Store, collection, index string) error {
 	fp := embedFingerprint()
 	total, err := store.CountUnembedded(fp, collection)
 	if err != nil {
@@ -1051,6 +1052,9 @@ func embedAll(store *Store, collection string) error {
 		args := []string{"embed-worker", "--batch", strconv.Itoa(batchSize)}
 		if collection != "" {
 			args = append(args, "--collection", collection)
+		}
+		if index != "" {
+			args = append(args, "--index", index)
 		}
 		if quiet {
 			args = append(args, "--quiet")
@@ -1102,12 +1106,12 @@ func embedAll(store *Store, collection string) error {
 	return nil
 }
 
-func embedWorker(maxDocs int, collection string) error {
-	cfg, _, err := loadConfig("")
+func embedWorker(maxDocs int, collection, index string) error {
+	cfg, _, err := loadConfig(index)
 	if err != nil {
 		return err
 	}
-	store, err := NewStore(dbPath(""))
+	store, err := NewStore(dbPath(index))
 	if err != nil {
 		return err
 	}
@@ -1212,7 +1216,8 @@ func embedWorker(maxDocs int, collection string) error {
 }
 
 // syncAll re-indexes all collections then embeds any unembedded documents.
-func syncAll(store *Store, engine Embedder, cfg *Config, skipEmbed bool) error {
+// `index` is the named index ("" = default), forwarded to the embed step.
+func syncAll(store *Store, engine Embedder, cfg *Config, skipEmbed bool, index string) error {
 	for _, col := range cfg.Collections {
 		if err := indexCollection(store, col); err != nil {
 			log.Printf("error indexing %s: %v", col.Name, err)
@@ -1221,5 +1226,5 @@ func syncAll(store *Store, engine Embedder, cfg *Config, skipEmbed bool) error {
 	if skipEmbed {
 		return nil
 	}
-	return embedAll(store, "")
+	return embedAll(store, "", index)
 }
