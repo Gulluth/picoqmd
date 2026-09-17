@@ -3112,7 +3112,7 @@ Quick start:
 			}
 		}
 
-		if err := syncAll(store, engine, cfg, noEmbed); err != nil {
+		if err := syncAll(store, engine, cfg, noEmbed, indexName); err != nil {
 			return err
 		}
 
@@ -3150,7 +3150,7 @@ Quick start:
 		defer store.Close()
 
 		engine := NewLLMEngine(cacheDir())
-		return syncAll(store, engine, cfg, noEmbed)
+		return syncAll(store, engine, cfg, noEmbed, indexName)
 	}
 
 	syncCmd := &cobra.Command{
@@ -3180,7 +3180,7 @@ Quick start:
 				return err
 			}
 			defer store.Close()
-			return embedAll(store, col)
+			return embedAll(store, col, indexName)
 		},
 	}
 	embedCmd.Flags().Bool("no-embed", false, "skip embedding (BM25-only re-index)")
@@ -3461,16 +3461,18 @@ Quick start:
 	// --- embed-worker (hidden, used by subprocess orchestrator) ---
 	var workerBatch int
 	var workerCollection string
+	var workerIndex string
 	embedWorkerCmd := &cobra.Command{
 		Use:    "embed-worker",
 		Short:  "Internal: embed a batch of documents (used by sync subprocess orchestrator)",
 		Hidden: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return embedWorker(workerBatch, workerCollection)
+			return embedWorker(workerBatch, workerCollection, workerIndex)
 		},
 	}
 	embedWorkerCmd.Flags().IntVar(&workerBatch, "batch", 500, "max documents to embed")
 	embedWorkerCmd.Flags().StringVar(&workerCollection, "collection", "", "restrict to one collection")
+	embedWorkerCmd.Flags().StringVar(&workerIndex, "index", "", "named index (must match the orchestrator's)")
 
 	// --- export ---
 	exportCmd := &cobra.Command{
